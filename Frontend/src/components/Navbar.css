@@ -1,0 +1,23 @@
+.nav {
+	padding: 1rem 0;
+	width: 100vw;
+	display: grid;
+	grid-template-columns: 3fr 10fr 3fr;
+	align-items: center;
+	justify-items: center;
+}
+
+.search-bar {
+	max-width: 80%;
+	width: 60vw;
+	padding: 0.5rem 1rem;
+	border: 1px solid transparent;
+	border-radius: 5px;
+}
+
+.logo {
+	height: auto;
+	font-size: 2rem;
+	font-weight: 700;
+	transition: ease-in-out 0.2s;
+}

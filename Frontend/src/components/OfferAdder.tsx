@@ -1,26 +1,7 @@
-import React from "react";
+import "./OfferAdder.css";
 
 function OfferAdder() {
-	const formStyle: React.CSSProperties = {
-		padding: "1rem",
-		display: "flex",
-		flexDirection: "column",
-		placeItems: "center",
-	};
-
-	const inputStyle: React.CSSProperties = {
-		padding: ".5rem",
-		margin: "0 .5rem",
-		borderRadius: "5px",
-		border: "1px solid transparent",
-	};
-
-	const buttonStyle: React.CSSProperties = {
-		width: "10rem",
-		marginTop: "1rem",
-	};
-
-	function getFormData(event: Event) {
+	function getFormData(event: React.ChangeEvent<HTMLFormElement>) {
 		event.preventDefault();
 
 		const formData = new FormData(event.target);
@@ -33,25 +14,29 @@ function OfferAdder() {
 
 	return (
 		<>
-			<form style={formStyle} onSubmit={getFormData}>
+			<p>
+				Oops! Looks like there are no matches for this offer. Care to
+				add one?
+			</p>
+			<form className="form" onSubmit={getFormData}>
 				<div>
 					<input
 						placeholder="Provide Company Name"
 						name="companyName"
-						style={inputStyle}
+						className="input"
 					></input>
 					<input
 						placeholder="Provide Offer URL"
 						name="offerURL"
-						style={inputStyle}
+						className="input"
 					></input>
 					<input
 						placeholder="Provide Position Name"
 						name="positionName"
-						style={inputStyle}
+						className="input"
 					></input>
 				</div>
-				<button type="submit" style={buttonStyle}>
+				<button type="submit" className="button">
 					Add
 				</button>
 			</form>
