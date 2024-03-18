@@ -1,4 +1,5 @@
 import { Offer } from "../App";
+import OfferAdder from "./OfferAdder";
 
 type prop = {
 	offersData: Offer[];
@@ -18,11 +19,17 @@ function QueryResults({ offersData, searchText }: prop) {
 	});
 
 	return (
-		<div>
-			{filtered_data.map((offer) => (
-				<QueryItem key={offer.URL} offer={offer} />
-			))}
-		</div>
+		<>
+			{filtered_data.length > 0 ? (
+				<div>
+					{filtered_data.map((offer) => (
+						<QueryItem key={offer.URL} offer={offer} />
+					))}
+				</div>
+			) : (
+				<OfferAdder></OfferAdder>
+			)}
+		</>
 	);
 }
 
