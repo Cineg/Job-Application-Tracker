@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import "./App.css";
+import Navbar from "./components/Navbar";
+import QueryResults from "./components/QueryResults";
+import DB_MOCKUP from "./DB MOCKUP.json";
+
+export type Offer = {
+	URL: string;
+	CompanyName: string;
+	Status: string;
+	PositionName: string;
+};
+
+export type OfferData = {
+	offersData: Offer[];
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+	const [searchText, setSearchText] = useState<string>("");
+	const [offersData, setOffersData] = useState<OfferData>(
+		DB_MOCKUP["Offers"]
+	);
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+	function navbarSearch(text: string): void {
+		setSearchText(text);
+	}
+
+	return (
+		<>
+			<Navbar navbarSearch={navbarSearch}></Navbar>
+			<QueryResults
+				offersData={offersData}
+				searchText={searchText}
+			></QueryResults>
+		</>
+	);
 }
 
-export default App
+export default App;

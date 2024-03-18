@@ -1,0 +1,16 @@
+{
+    "Offers": [
+        {
+        "URL": "https://www.abc.com/",
+        "CompanyName": "ABC",
+        "Status": "Not Applied",
+        "PositionName": "Mid Backend Developer (Python)"
+    },
+    {
+        "URL": "https://www.cde.com/",
+        "CompanyName": "CDE",
+        "Status": "Applied",
+        "PositionName": "Python Developer"
+    }
+    ]
+}
