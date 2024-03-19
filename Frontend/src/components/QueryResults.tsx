@@ -1,20 +1,24 @@
-import { Offer } from "../App";
+import { Offer, OfferData } from "../App";
 import OfferAdder from "./OfferAdder";
 import "./QueryResults.css";
 
 type prop = {
-	offersData: Offer[];
+	offersData: OfferData | never[];
 	searchText: string;
 };
 
 function QueryResults({ offersData, searchText }: prop) {
-	function filterOffers(offersData: Offer[], searchText: string): Offer[] {
+	function filterOffers(
+		offersData: OfferData | never[],
+		searchText: string
+	): Offer[] {
 		const filteredData: Offer[] = [];
+
 		offersData.forEach((offer: Offer) => {
 			if (
-				offer.CompanyName.toLowerCase().includes(searchText) ||
-				offer.PositionName.toLowerCase().includes(searchText) ||
-				offer.URL.toLowerCase().includes(searchText)
+				offer.company.toLowerCase().includes(searchText) ||
+				offer.title.toLowerCase().includes(searchText) ||
+				offer.url.toLowerCase().includes(searchText)
 			) {
 				filteredData.push(offer);
 			}
@@ -22,14 +26,17 @@ function QueryResults({ offersData, searchText }: prop) {
 		return filteredData;
 	}
 
-	const filtered_data: Offer[] = filterOffers(offersData, searchText);
+	const filtered_data: Offer[] | never[] = filterOffers(
+		offersData,
+		searchText
+	);
 
 	return (
 		<>
 			{filtered_data.length > 0 ? (
 				<main className="main">
 					{filtered_data.map((offer) => (
-						<QueryItem key={offer.URL} offer={offer} />
+						<QueryItem key={offer.url} offer={offer} />
 					))}
 				</main>
 			) : (
@@ -44,9 +51,9 @@ function QueryItem({ offer }: { offer: Offer }) {
 
 	function getColor(offer: Offer) {
 		let tagColor: string;
-		offer.Status === "Applied"
+		offer.status === "Applied"
 			? (tagColor = "tag-good")
-			: offer.Status === "Not Applied"
+			: offer.status === "Not Applied"
 			? (tagColor = "tag-bad")
 			: (tagColor = "tag-none");
 
@@ -56,12 +63,12 @@ function QueryItem({ offer }: { offer: Offer }) {
 	return (
 		<div className="card">
 			<div className="card-row">
-				<p>{offer.CompanyName}</p>
-				<a href={offer.URL}>{offer.PositionName}</a>
+				<p>{offer.company}</p>
+				<a href={offer.url}>{offer.title}</a>
 			</div>
 			<div className="card-row">
-				<div className={"tag " + tagColorClass}>{offer.Status}</div>
-				<p>20/77/2137</p>
+				<div className={"tag " + tagColorClass}>{offer.status}</div>
+				<p>{offer.dateAdded}</p>
 			</div>
 		</div>
 	);

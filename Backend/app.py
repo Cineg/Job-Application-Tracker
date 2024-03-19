@@ -35,25 +35,38 @@ def results() -> Response:
 
 @app.route("/api/v1/add-offer", methods=["POST"])
 def add_offer() -> Response:
-    data: dict[str, str] = request.form
+    data: dict[str, str] = request.get_json()
 
     for key in ["url", "company", "title"]:
         if key not in data:
-            return Response(f"{key.capitalize()} not provided", 400)
+            return jsonify(
+                message=f"{key.capitalize()} not provided", status=400, success=False
+            )
         elif type(data[key]) != str:
-            return Response(f"{key.capitalize()} - not acceptable datatype", 400)
+            return jsonify(
+                message=f"{key.capitalize()} is not acceptable datatype",
+                status=400,
+            )
         elif data[key] == "":
-            return Response(f"{key.capitalize()} value not provided", 400)
+            return jsonify(
+                message=f"{key.capitalize()} value not provided",
+                status=400,
+                success=False,
+            )
 
     if not db.add_one_offer(data["url"], data["company"], data["title"]):
-        return Response("Can't add data to database. Please try again.", 400)
+        return jsonify(
+            message=f"Can't add data to database. Please try again.",
+            status=400,
+            success=False,
+        )
 
     return jsonify(success=True)
 
 
 @app.route("/api/v1/update-offer", methods=["PUT"])
 def update_offer() -> Response:
-    data: dict[str, str] = request.form
+    data: dict[str, str] = request.get_json()
     for key in ["url", "status"]:
         if key not in data:
             return Response(f"{key.capitalize()} not provided", 400)
@@ -70,7 +83,7 @@ def update_offer() -> Response:
 
 @app.route("/api/v1/delete-offer", methods=["DELETE"])
 def delete_offer() -> Response:
-    data: dict[str, str] = request.form
+    data: dict[str, str] = request.get_json()
     for key in ["url"]:
         if key not in data:
             return Response(f"{key.capitalize()} not provided", 400)

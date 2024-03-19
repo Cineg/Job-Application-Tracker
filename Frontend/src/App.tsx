@@ -1,25 +1,29 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import QueryResults from "./components/QueryResults";
-import DB_MOCKUP from "./DB MOCKUP.json";
+import { fetchOffers } from "./hooks/fetch_offers";
 
 export type Offer = {
-	URL: string;
-	CompanyName: string;
-	Status: string;
-	PositionName: string;
+	rowid: number;
+	url: string;
+	company: string;
+	status: string;
+	title: string;
+	dateAdded: string;
 };
 
 export type OfferData = {
-	offersData: Offer[];
+	offersData: Array<Offer>;
 };
 
 function App() {
 	const [searchText, setSearchText] = useState<string>("");
-	const [offersData, setOffersData] = useState<OfferData>(
-		DB_MOCKUP["Offers"]
-	);
+	const [offersData, setOffersData] = useState<OfferData | Array<never>>([]);
+
+	useEffect(() => {
+		fetchOffers(setOffersData);
+	}, []);
 
 	function navbarSearch(text: string): void {
 		setSearchText(text);
@@ -28,6 +32,7 @@ function App() {
 	return (
 		<>
 			<Navbar navbarSearch={navbarSearch}></Navbar>
+
 			<QueryResults
 				offersData={offersData}
 				searchText={searchText}
