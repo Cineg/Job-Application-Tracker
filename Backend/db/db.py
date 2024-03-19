@@ -1,23 +1,15 @@
 import sqlite3
 import os
+from datetime import date
 
 DB_PATH: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), "database.db")
 
 
-def check_db_exists() -> bool:
-    if os.path.exists(DB_PATH):
-        return True
-
-    create_offer_table()
-    if os.path.exists(DB_PATH):
-        return True
-
-    return False
-
-
+##########
+# CREATE #
+##########
 def create_offer_table() -> bool:
     try:
-
         conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
 
         query: str = """
@@ -32,6 +24,112 @@ def create_offer_table() -> bool:
         return False
 
 
+def create_refresh_table() -> bool:
+    try:
+        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+
+        query: str = """
+            CREATE TABLE refresh (refreshDate TEXT);
+        """
+
+        conn.execute(query)
+        conn.close()
+
+        if not _add_timestamp():
+            raise Exception
+
+        return True
+
+    except:
+        conn.close()
+        return False
+
+
+##########
+# UPDATE #
+##########
+def update_status(url: str, new_status: str) -> bool:
+    try:
+        if not check_db_exists():
+            return False
+
+        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        cursor: sqlite3.Cursor = conn.cursor()
+        query: str = f"""
+            UPDATE offers 
+            SET status = "{new_status}"
+            WHERE url = "{url}";
+        """
+
+        cursor = cursor.execute(query)
+        conn.commit()
+        conn.close()
+        return True
+
+    except:
+        conn.close()
+        return False
+
+
+def _update_statuses() -> bool:
+    try:
+        if not check_db_exists():
+            return False
+
+        if _get_timestamp() == date.today():
+            return True
+
+        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        cursor: sqlite3.Cursor = conn.cursor()
+        query: str = f"""
+            UPDATE offers 
+            SET status = "No response"
+            WHERE 
+                ROUND(julianday("now") - julianday(dateAdded)) > 30 
+                AND
+                status = "Applied";
+        """
+
+        cursor = cursor.execute(query)
+        conn.commit()
+        conn.close()
+
+        if not _update_timestamp():
+            raise Exception
+
+        return True
+
+    except:
+        conn.close()
+        return False
+
+
+def _update_timestamp() -> bool:
+    try:
+        if not check_db_exists():
+            return False
+
+        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        cursor: sqlite3.Cursor = conn.cursor()
+        query: str = f"""
+            UPDATE refresh 
+            SET refreshDate = date("now")
+            WHERE rowid = 1;
+        """
+
+        cursor = cursor.execute(query)
+        conn.commit()
+        conn.close()
+        return True
+
+    except:
+        conn.close()
+        return False
+
+
+##########
+# INSERT #
+##########
 def add_one_offer(url: str, company: str, title: str) -> bool:
     try:
         if not check_db_exists():
@@ -41,7 +139,7 @@ def add_one_offer(url: str, company: str, title: str) -> bool:
         cursor: sqlite3.Cursor = conn.cursor()
         query: str = f"""
             INSERT INTO offers (url, company, title, status, dateAdded)
-            VALUES ("{url}", "{company}", "{title}", "Applied", DATE("now"));
+            VALUES ("{url}", "{company}", "{title}", "Applied", Date("now"));
         """
 
         cursor = cursor.execute(query)
@@ -53,18 +151,41 @@ def add_one_offer(url: str, company: str, title: str) -> bool:
         return False
 
 
+def _add_timestamp() -> bool:
+    try:
+        if not check_db_exists():
+            return False
+        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        cursor: sqlite3.Cursor = conn.cursor()
+
+        query: str = """
+            INSERT INTO refresh (refreshDate) VALUES (Date("now"))
+        """
+
+        cursor = cursor.execute(query)
+        conn.commit()
+        conn.close()
+        return True
+    except:
+        conn.close()
+        return False
+
+
+##########
+# SELECT #
+##########
 def select_all() -> list[list[str]] | None:
     try:
         if not check_db_exists():
             return None
 
         conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
-        cursor = sqlite3.Cursor(conn)
+        cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
 
         query: str = """
             SELECT 
-                *,
-                ROUND(julianday(dateAdded) - julianday("now")) as dateDiff
+                rowid,
+                *
             FROM offers;
         """
 
@@ -88,12 +209,12 @@ def _select_one() -> list[list[str]] | None:
         if not check_db_exists():
             return None
         conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
-        cursor = sqlite3.Cursor(conn)
+        cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
 
         query: str = """
             SELECT 
-                *,
-                ROUND(julianday(dateAdded) - julianday("now")) as dateDiff
+                rowid,
+                *
             FROM offers
             WHERE
             url = "https://github.com/Cineg";
@@ -113,11 +234,50 @@ def _select_one() -> list[list[str]] | None:
         return None
 
 
+def _get_timestamp() -> str | None:
+    try:
+        if not check_db_exists():
+            return None
+
+        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
+        query: str = """
+            SELECT * from refresh;
+        """
+
+        cursor.execute(query)
+        result: str = cursor.fetchone()
+
+        conn.close()
+        return result
+    except:
+        return None
+
+
+###########
+# HELPERS #
+###########
+def check_db_exists() -> bool:
+    if os.path.exists(DB_PATH):
+        return True
+
+    create_offer_table()
+    create_refresh_table()
+
+    if os.path.exists(DB_PATH):
+        return True
+
+    return False
+
+
 def _get_headers(cursor: sqlite3.Cursor) -> list[str]:
     headers: list[str] = [item[0] for item in cursor.description]
     return headers
 
 
+########
+# MAIN #
+########
 def main() -> None:
     pass
 

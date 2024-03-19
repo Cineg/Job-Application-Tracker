@@ -32,18 +32,18 @@ def results() -> Response:
 
 
 @app.route("/api/v1/add-offer", methods=["POST"])
-def add_offer():
+def add_offer() -> Response:
     data: dict[str, str] = request.form
 
     for key in ["url", "company", "title"]:
         if key not in data:
-            return f"{key.capitalize()} not provided", 400
-        if type(data[key]) != str:
-            return f"{key.capitalize()} - not acceptable datatype", 400
-        if data[key] == "":
-            return f"{key.capitalize()} value not provided", 400
+            return Response(f"{key.capitalize()} not provided", 400)
+        elif type(data[key]) != str:
+            return Response(f"{key.capitalize()} - not acceptable datatype", 400)
+        elif data[key] == "":
+            return Response(f"{key.capitalize()} value not provided", 400)
 
-        if not db.add_one_offer(data["url"], data["company"], data["title"]):
-            return "Can't add data to Database. Please try again.", 400
+    if not db.add_one_offer(data["url"], data["company"], data["title"]):
+        return Response("Can't add data to Database. Please try again.", 400)
 
     return jsonify(success=True)
