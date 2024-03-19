@@ -11,6 +11,24 @@
         "CompanyName": "CDE",
         "Status": "Applied",
         "PositionName": "Python Developer"
+    },
+    {
+        "URL": "https://www.cde.com/asa",
+        "CompanyName": "CDE",
+        "Status": "Waiting",
+        "PositionName": "Python Developer"
+    },
+    {
+        "URL": "https://www.cde.com/sad",
+        "CompanyName": "CDE",
+        "Status": "Applied",
+        "PositionName": "Python Developer"
+    },
+    {
+        "URL": "https://www.cde.com/blad",
+        "CompanyName": "CDE",
+        "Status": "Applied",
+        "PositionName": "Python Developer"
     }
     ]
 }

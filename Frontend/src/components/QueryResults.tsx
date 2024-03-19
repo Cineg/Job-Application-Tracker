@@ -1,4 +1,4 @@
-import { Offer, OfferData } from "../App";
+import { Offer } from "../App";
 import OfferAdder from "./OfferAdder";
 import "./QueryResults.css";
 
@@ -40,12 +40,29 @@ function QueryResults({ offersData, searchText }: prop) {
 }
 
 function QueryItem({ offer }: { offer: Offer }) {
+	const tagColorClass: string = getColor(offer);
+
+	function getColor(offer: Offer) {
+		let tagColor: string;
+		offer.Status === "Applied"
+			? (tagColor = "tag-good")
+			: offer.Status === "Not Applied"
+			? (tagColor = "tag-bad")
+			: (tagColor = "tag-none");
+
+		return tagColor;
+	}
+
 	return (
 		<div className="card">
-			<a href={offer.URL}>
-				{offer.CompanyName} -- {offer.PositionName}
-			</a>
-			<p>{offer.Status}</p>
+			<div className="card-row">
+				<p>{offer.CompanyName}</p>
+				<a href={offer.URL}>{offer.PositionName}</a>
+			</div>
+			<div className="card-row">
+				<div className={"tag " + tagColorClass}>{offer.Status}</div>
+				<p>20/77/2137</p>
+			</div>
 		</div>
 	);
 }

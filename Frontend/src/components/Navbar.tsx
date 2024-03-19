@@ -20,7 +20,6 @@ function Navbar({ navbarSearch }: NavbarSearch) {
 				onChange={searchChange}
 				placeholder="Search URLs, Company, Title..."
 			></input>
-			<a href="/">Profile</a>
 		</nav>
 	);
 }
