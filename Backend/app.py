@@ -27,7 +27,7 @@ def results() -> Response:
         return jsonify({"Message": "No results"})
 
     result: dict[str, list[dict]] = parse_db_query(results)
-    print(result)
+
     return jsonify(result)
 
 
@@ -43,6 +43,7 @@ def add_offer():
         if data[key] == "":
             return f"{key.capitalize()} value not provided", 400
 
-        db.add_one_offer(data["url"], data["company"], data["title"])
+        if not db.add_one_offer(data["url"], data["company"], data["title"]):
+            return "Can't add data to Database. Please try again.", 400
 
     return jsonify(success=True)

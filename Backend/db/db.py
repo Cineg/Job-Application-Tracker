@@ -4,8 +4,20 @@ import os
 DB_PATH: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), "database.db")
 
 
+def check_db_exists() -> bool:
+    if os.path.exists(DB_PATH):
+        return True
+
+    create_offer_table()
+    if os.path.exists(DB_PATH):
+        return True
+
+    return False
+
+
 def create_offer_table() -> bool:
     try:
+
         conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
 
         query: str = """
@@ -22,6 +34,9 @@ def create_offer_table() -> bool:
 
 def add_one_offer(url: str, company: str, title: str) -> bool:
     try:
+        if not check_db_exists():
+            return False
+
         conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
         cursor: sqlite3.Cursor = conn.cursor()
         query: str = f"""
@@ -40,6 +55,8 @@ def add_one_offer(url: str, company: str, title: str) -> bool:
 
 def select_all() -> list[list[str]] | None:
     try:
+        if not check_db_exists():
+            return None
 
         conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
         cursor = sqlite3.Cursor(conn)
@@ -68,6 +85,8 @@ def select_all() -> list[list[str]] | None:
 def _select_one() -> list[list[str]] | None:
     # DEBUG FUNCTION
     try:
+        if not check_db_exists():
+            return None
         conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
         cursor = sqlite3.Cursor(conn)
 
@@ -97,10 +116,6 @@ def _select_one() -> list[list[str]] | None:
 def _get_headers(cursor: sqlite3.Cursor) -> list[str]:
     headers: list[str] = [item[0] for item in cursor.description]
     return headers
-
-
-def create_db() -> None:
-    conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
 
 
 def main() -> None:
