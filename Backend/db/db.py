@@ -254,6 +254,32 @@ def _get_timestamp() -> str | None:
         return None
 
 
+##########
+# DELETE #
+##########
+def delete_offer(url: str) -> bool:
+    try:
+        if not check_db_exists():
+            return False
+
+        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
+
+        query: str = f"""
+            DELETE FROM offers    
+            WHERE
+            url = "{url}";
+        """
+
+        cursor.execute(query)
+        conn.commit()
+        conn.close()
+        return True
+    except:
+        conn.close()
+        return False
+
+
 ###########
 # HELPERS #
 ###########
