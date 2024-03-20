@@ -13,13 +13,9 @@ export type Offer = {
 	dateAdded: string;
 };
 
-export type OfferData = {
-	offersData: Array<Offer>;
-};
-
 function App() {
 	const [searchText, setSearchText] = useState<string>("");
-	const [offersData, setOffersData] = useState<OfferData | Array<never>>([]);
+	const [offersData, setOffersData] = useState<Offer[] | Array<never>>([]);
 	const [isOfferAdded, setIsOfferAdded] = useState<boolean>(false);
 
 	useEffect(() => {

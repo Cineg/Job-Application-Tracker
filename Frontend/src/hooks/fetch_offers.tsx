@@ -1,8 +1,8 @@
-import { OfferData } from "../App";
+import { Offer } from "../App";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
-export async function fetchOffers(): Promise<OfferData | never[]> {
+export async function fetchOffers(): Promise<Offer[] | never[]> {
 	try {
 		const response = await fetch(`${API_BASE}/results`, {
 			method: "GET",

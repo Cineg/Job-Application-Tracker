@@ -1,16 +1,16 @@
-import { Offer, OfferData } from "../App";
+import { Offer } from "../App";
 import OfferAdder from "./OfferAdder";
 import "./QueryResults.css";
 
 type prop = {
-	offersData: OfferData | never[];
+	offersData: Offer[] | never[];
 	setIsOfferAdded: React.Dispatch<React.SetStateAction<boolean>>;
 	searchText: string;
 };
 
 function QueryResults({ offersData, searchText, setIsOfferAdded }: prop) {
 	function filterOffers(
-		offersData: OfferData | never[],
+		offersData: Offer[] | never[],
 		searchText: string
 	): Offer[] {
 		const filteredData: Offer[] = [];
