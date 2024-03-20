@@ -20,10 +20,15 @@ export type OfferData = {
 function App() {
 	const [searchText, setSearchText] = useState<string>("");
 	const [offersData, setOffersData] = useState<OfferData | Array<never>>([]);
+	const [isOfferAdded, setIsOfferAdded] = useState<boolean>(false);
 
 	useEffect(() => {
-		fetchOffers(setOffersData);
+		fetchOffers().then((data) => setOffersData(data));
 	}, []);
+
+	useEffect(() => {
+		fetchOffers().then((data) => setOffersData(data));
+	}, [isOfferAdded]);
 
 	function navbarSearch(text: string): void {
 		setSearchText(text);
@@ -36,6 +41,7 @@ function App() {
 			<QueryResults
 				offersData={offersData}
 				searchText={searchText}
+				setIsOfferAdded={setIsOfferAdded}
 			></QueryResults>
 		</>
 	);

@@ -4,10 +4,11 @@ import "./QueryResults.css";
 
 type prop = {
 	offersData: OfferData | never[];
+	setIsOfferAdded: React.Dispatch<React.SetStateAction<boolean>>;
 	searchText: string;
 };
 
-function QueryResults({ offersData, searchText }: prop) {
+function QueryResults({ offersData, searchText, setIsOfferAdded }: prop) {
 	function filterOffers(
 		offersData: OfferData | never[],
 		searchText: string
@@ -40,7 +41,7 @@ function QueryResults({ offersData, searchText }: prop) {
 					))}
 				</main>
 			) : (
-				<OfferAdder></OfferAdder>
+				<OfferAdder setIsOfferAdded={setIsOfferAdded}></OfferAdder>
 			)}
 		</>
 	);

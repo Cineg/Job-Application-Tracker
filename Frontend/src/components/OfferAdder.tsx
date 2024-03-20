@@ -3,14 +3,17 @@ import "./OfferAdder.css";
 
 const API_BASE: string = import.meta.env.VITE_API_URL;
 
-type formProps = {
-	setErrMessage: React.Dispatch<React.SetStateAction<string>>;
-	setIsSuccess: React.Dispatch<React.SetStateAction<boolean>>;
+type offerAdderProp = {
+	setIsOfferAdded: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function OfferAdder() {
+type newOfferProps = {
+	setErrMessage: React.Dispatch<React.SetStateAction<string>>;
+	setIsOfferAdded: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function OfferAdder({ setIsOfferAdded }: offerAdderProp) {
 	const [errMessage, setErrMessage] = useState<string>("");
-	const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
 	return (
 		<div className="wrapper">
@@ -20,7 +23,7 @@ function OfferAdder() {
 			</p>
 			<NewOffer
 				setErrMessage={setErrMessage}
-				setIsSuccess={setIsSuccess}
+				setIsOfferAdded={setIsOfferAdded}
 			></NewOffer>
 			{errMessage === "" ? (
 				<></>
@@ -31,7 +34,7 @@ function OfferAdder() {
 	);
 }
 
-function NewOffer({ setErrMessage, setIsSuccess }: formProps) {
+function NewOffer({ setErrMessage, setIsOfferAdded }: newOfferProps) {
 	function getFormData(event: React.ChangeEvent<HTMLFormElement>) {
 		event.preventDefault();
 
@@ -55,9 +58,9 @@ function NewOffer({ setErrMessage, setIsSuccess }: formProps) {
 			.then((json) => {
 				if (json["success"] === false) {
 					setErrMessage(json["message"]);
-					setIsSuccess(false);
+					setIsOfferAdded(false);
 				} else {
-					setIsSuccess(true);
+					setIsOfferAdded(true);
 					setErrMessage("");
 				}
 			});
