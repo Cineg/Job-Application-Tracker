@@ -1,4 +1,5 @@
 import "./Navbar.css";
+import NavbarSearch from "./NavbarSearch";
 
 type NavbarSearch = {
 	navbarSearch: (text: string) => void;
@@ -14,12 +15,7 @@ function Navbar({ navbarSearch }: NavbarSearch) {
 			<a href="/" className="logo">
 				Logo
 			</a>
-			<input
-				className="search-bar"
-				type="text"
-				onChange={searchChange}
-				placeholder="Search URLs, Company, Title..."
-			></input>
+			<NavbarSearch searchChange={searchChange} />
 		</nav>
 	);
 }

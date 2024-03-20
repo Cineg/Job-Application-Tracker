@@ -1,0 +1,21 @@
+.card-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: -webkit-fill-available;
+}
+
+.card-top {
+	padding: 0.75rem 0.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: baseline;
+}
+
+.bold {
+	font-weight: 700;
+}
+
+.small {
+	font-size: 0.9rem;
+}

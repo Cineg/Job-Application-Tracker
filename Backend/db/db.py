@@ -184,7 +184,7 @@ def select_all() -> list[list[str]] | None:
 
         query: str = """
             SELECT 
-                rowid,
+                rowid as id,
                 *
             FROM offers;
         """
@@ -213,7 +213,7 @@ def _select_one() -> list[list[str]] | None:
 
         query: str = """
             SELECT 
-                rowid,
+                rowid as id,
                 *
             FROM offers
             WHERE
