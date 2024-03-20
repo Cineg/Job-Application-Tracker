@@ -15,22 +15,14 @@
 	cursor: pointer;
 }
 
-.tag {
-	border-radius: 10px;
-	width: max-content;
-	min-width: 7rem;
-	font-size: smaller;
-	padding: 0.5rem;
+.border-good {
+	border-color: #3285a6;
 }
 
-.tag-good {
-	background-color: #3285a6;
+.border-bad {
+	border-color: #f25041;
 }
 
-.tag-bad {
-	background-color: #f25041;
-}
-
-.tag-none {
-	background-color: grey;
+.border-none {
+	border-color: grey;
 }

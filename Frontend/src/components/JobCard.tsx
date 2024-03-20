@@ -1,23 +1,25 @@
 import { Offer } from "../App";
 import JobCardInfo from "./JobCardInfo";
+import JobCardActions from "./JobCardActions";
 import "./JobCard.css";
 
 function JobCard({ offer }: { offer: Offer }) {
-	const tagColorClass: string = getColor(offer);
+	const tagColorClass: string = "tag-" + getColor(offer);
+	const borderColorClass: string = "border-" + getColor(offer);
 
 	function getColor(offer: Offer) {
-		let tagColor: string;
+		let color: string;
 		offer.status === "Applied"
-			? (tagColor = "tag-good")
+			? (color = "good")
 			: offer.status === "Not Applied"
-			? (tagColor = "tag-bad")
-			: (tagColor = "tag-none");
+			? (color = "bad")
+			: (color = "none");
 
-		return tagColor;
+		return color;
 	}
 
 	return (
-		<div className="card">
+		<div className={"card " + borderColorClass}>
 			<JobCardInfo
 				company={offer.company}
 				dateAdded={offer.dateAdded}
@@ -26,7 +28,12 @@ function JobCard({ offer }: { offer: Offer }) {
 				key={offer.id}
 			/>
 
-			<div className={"tag " + tagColorClass}>{offer.status}</div>
+			<div className="card-row">
+				<JobCardActions
+					status={offer.status}
+					tagColorClass={tagColorClass}
+				/>
+			</div>
 		</div>
 	);
 }

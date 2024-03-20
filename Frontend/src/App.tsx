@@ -20,7 +20,6 @@ function App() {
 	const [filteredOffers, setFilteredOffers] = useState<
 		Offer[] | Array<never>
 	>([]);
-
 	const [isLoaded, setIsLoaded] = useState<boolean>(false);
 	const [isOfferAdded, setIsOfferAdded] = useState<boolean>(false);
 
@@ -36,6 +35,7 @@ function App() {
 		fetchOffers().then((data) => {
 			setOffersData(data);
 			setFilteredOffers(filterOffers(data, searchText));
+			setIsOfferAdded(!isLoaded);
 		});
 	}, [isOfferAdded]);
 

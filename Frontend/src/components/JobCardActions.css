@@ -1,0 +1,43 @@
+.tag {
+	border-radius: 10px;
+	width: max-content;
+	min-width: 5rem;
+	font-size: smaller;
+	padding: 0.5rem;
+	border: 2px solid transparent;
+	transition: 0.2s ease-in-out;
+}
+
+.tag:hover {
+	border-color: #8fc4d9;
+}
+
+.edit {
+	background-color: #587783;
+}
+
+.edit:hover {
+	background-color: #6b91a0;
+	border-color: #8fc4d9;
+}
+
+.delete {
+	background-color: #5e1913;
+}
+
+.delete:hover {
+	background-color: #751f18;
+	border-color: #f25041;
+}
+
+.tag-good {
+	background-color: #3285a6;
+}
+
+.tag-bad {
+	background-color: #f25041;
+}
+
+.tag-none {
+	background-color: grey;
+}

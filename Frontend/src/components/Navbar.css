@@ -1,6 +1,6 @@
 .nav {
 	padding: 1rem 0;
-	width: 100vw;
+	width: -webkit-fill-available;
 	display: grid;
 	grid-template-columns: 3fr 10fr 3fr;
 	align-items: center;
