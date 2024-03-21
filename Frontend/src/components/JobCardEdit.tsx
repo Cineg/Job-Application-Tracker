@@ -1,6 +1,7 @@
 import "./JobCardEdit.css";
 import { Offer } from "../App";
 import { useState } from "react";
+import Modal from "./JobModal";
 
 const API_BASE: string = import.meta.env.VITE_API_URL;
 
@@ -70,7 +71,7 @@ function JobCardEdit({ setIsEdit, offer, setIsOfferAdded }: JobCardEditProp) {
 
 	return (
 		<>
-			<div className="container">
+			<Modal>
 				<form
 					className="modal"
 					onChange={validateForm}
@@ -128,7 +129,7 @@ function JobCardEdit({ setIsEdit, offer, setIsOfferAdded }: JobCardEditProp) {
 						</button>
 					</div>
 				</form>
-			</div>
+			</Modal>
 		</>
 	);
 }

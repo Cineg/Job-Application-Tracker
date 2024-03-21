@@ -4,12 +4,14 @@ type JobCardActionsProp = {
 	status: string;
 	tagColorClass: string;
 	setIsEdit: React.Dispatch<React.SetStateAction<boolean>>;
+	setIsDelete: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function JobCardActions({
 	status,
 	tagColorClass,
 	setIsEdit,
+	setIsDelete,
 }: JobCardActionsProp) {
 	return (
 		<>
@@ -20,7 +22,12 @@ function JobCardActions({
 			>
 				Edit
 			</button>
-			<button className="tag tag-button delete">Delete</button>
+			<button
+				className="tag tag-button delete"
+				onClick={() => setIsDelete(true)}
+			>
+				Delete
+			</button>
 		</>
 	);
 }

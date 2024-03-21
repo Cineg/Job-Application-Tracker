@@ -40,6 +40,24 @@
 	min-width: 7rem;
 }
 
+.offer-items {
+	display: flex;
+	flex-direction: column;
+	align-items: baseline;
+}
+
+.offer-items p {
+	padding: 0.25rem;
+}
+
+.offer-items p:last-child {
+	margin-bottom: 1rem;
+}
+
+.row-name {
+	font-weight: 700;
+}
+
 .submit-btn {
 	background-color: #8fc4d9;
 }
