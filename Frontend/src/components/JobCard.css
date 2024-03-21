@@ -1,4 +1,7 @@
 .card {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 	width: -webkit-fill-available;
 	border: 1px solid #153959;
 	border-radius: 10px;
@@ -19,10 +22,33 @@
 	border-color: #3285a6;
 }
 
+.border-good:hover {
+	border-color: #3285a6;
+	-webkit-box-shadow: 0px 0px 20px -5px rgb(50, 133, 166);
+	-moz-box-shadow: 0px 0px 20px -5px rgb(50, 133, 166);
+	box-shadow: 0px 0px 20px -5px rgb(50, 133, 166);
+}
+
 .border-bad {
 	border-color: #f25041;
+	opacity: 40%;
+}
+
+.border-bad:hover {
+	border-color: #f25041;
+	opacity: 100%;
+	-webkit-box-shadow: 0px 0px 20px -5px rgba(242, 80, 65, 1);
+	-moz-box-shadow: 0px 0px 20px -5px rgba(242, 80, 65, 1);
+	box-shadow: 0px 0px 20px -5px rgba(242, 80, 65, 1);
 }
 
 .border-none {
 	border-color: grey;
+}
+
+.border-none {
+	border-color: rgb(128, 128, 128);
+	-webkit-box-shadow: 0px 0px 20px -5px rgb(128, 128, 128);
+	-moz-box-shadow: 0px 0px 20px -5px rgb(128, 128, 128);
+	box-shadow: 0px 0px 20px -5px rgb(128, 128, 128);
 }

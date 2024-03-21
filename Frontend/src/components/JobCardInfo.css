@@ -1,8 +1,12 @@
 .card-row {
 	display: flex;
-	align-items: center;
+	align-items: stretch;
 	justify-content: space-between;
 	width: -webkit-fill-available;
+}
+
+.text-left {
+	text-align: left;
 }
 
 .card-top {
@@ -18,4 +22,7 @@
 
 .small {
 	font-size: 0.9rem;
+}
+.always-fit {
+	min-width: max-content;
 }

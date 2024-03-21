@@ -90,7 +90,6 @@ def update_offer() -> Response:
 @app.route("/api/v1/delete-offer", methods=["DELETE"])
 def delete_offer() -> Response:
     data: dict[str, str] = request.get_json()
-    print(data)
     for key in ["url"]:
         if key not in data:
             return Response(f"{key.capitalize()} not provided", 400)

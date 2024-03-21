@@ -205,7 +205,8 @@ def select_all() -> list[list[str]] | None:
             SELECT 
                 rowid as id,
                 *
-            FROM offers;
+            FROM offers
+            ORDER BY dateAdded desc;
         """
 
         cursor.execute(query)

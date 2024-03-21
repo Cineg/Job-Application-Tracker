@@ -11,10 +11,10 @@ function JobCardInfo({ title, dateAdded, company, url }: JobCardProp) {
 	return (
 		<div className="card-top">
 			<div className="card-row">
-				<a href={url} className="small">
+				<a href={url} className="small text-left">
 					{title}
 				</a>
-				<p className="small">{dateAdded}</p>
+				<p className="small always-fit">{dateAdded}</p>
 			</div>
 			<p className="bold">{company}</p>
 		</div>

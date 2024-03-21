@@ -22,7 +22,7 @@ function JobCard({ offer, setIsOfferAdded }: JobCardProp) {
 		let color: string;
 		offer.status === "Applied"
 			? (color = "good")
-			: offer.status === "Not Applied"
+			: offer.status === "Rejected"
 			? (color = "bad")
 			: (color = "none");
 
