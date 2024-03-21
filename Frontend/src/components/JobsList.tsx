@@ -14,7 +14,11 @@ function JobsList({ filteredOffers, setIsOfferAdded }: JobListProp) {
 			{filteredOffers.length > 0 ? (
 				<main className="main">
 					{filteredOffers.map((offer) => (
-						<JobCard key={offer.id} offer={offer} />
+						<JobCard
+							key={offer.id}
+							offer={offer}
+							setIsOfferAdded={setIsOfferAdded}
+						/>
 					))}
 				</main>
 			) : (

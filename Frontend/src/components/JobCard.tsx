@@ -1,9 +1,18 @@
 import { Offer } from "../App";
 import JobCardInfo from "./JobCardInfo";
 import JobCardActions from "./JobCardActions";
+import JobCardEdit from "./JobCardEdit";
 import "./JobCard.css";
+import { useState } from "react";
 
-function JobCard({ offer }: { offer: Offer }) {
+type JobCardProp = {
+	offer: Offer;
+	setIsOfferAdded: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function JobCard({ offer, setIsOfferAdded }: JobCardProp) {
+	const [isEdit, setIsEdit] = useState<boolean>(false);
+
 	const tagColorClass: string = "tag-" + getColor(offer);
 	const borderColorClass: string = "border-" + getColor(offer);
 
@@ -32,8 +41,19 @@ function JobCard({ offer }: { offer: Offer }) {
 				<JobCardActions
 					status={offer.status}
 					tagColorClass={tagColorClass}
+					setIsEdit={setIsEdit}
 				/>
 			</div>
+
+			{isEdit ? (
+				<JobCardEdit
+					setIsEdit={setIsEdit}
+					offer={offer}
+					setIsOfferAdded={setIsOfferAdded}
+				/>
+			) : (
+				<></>
+			)}
 		</div>
 	);
 }

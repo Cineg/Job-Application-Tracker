@@ -67,7 +67,7 @@ def add_offer() -> Response:
 @app.route("/api/v1/update-offer", methods=["PUT"])
 def update_offer() -> Response:
     data: dict[str, str] = request.get_json()
-    for key in ["url", "status"]:
+    for key in ["url", "status", "company", "dateAdded", "title"]:
         if key not in data:
             return Response(f"{key.capitalize()} not provided", 400)
         elif type(data[key]) != str:
@@ -75,7 +75,13 @@ def update_offer() -> Response:
         elif data[key] == "":
             return Response(f"{key.capitalize()} value not provided", 400)
 
-    if not db.update_status(data["url"], data["status"]):
+    if not db.update_status(
+        url=data["url"],
+        new_status=data["status"],
+        new_company=data["company"],
+        new_date=data["dateAdded"],
+        new_title=data["title"],
+    ):
         return Response("Can't update database. Please try again.", 400)
 
     return jsonify(success=True)

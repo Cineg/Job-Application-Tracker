@@ -48,7 +48,9 @@ def create_refresh_table() -> bool:
 ##########
 # UPDATE #
 ##########
-def update_status(url: str, new_status: str) -> bool:
+def update_status(
+    url: str, new_status: str, new_title: str, new_date: str, new_company: str
+) -> bool:
     try:
         if not check_db_exists():
             return False
@@ -57,13 +59,21 @@ def update_status(url: str, new_status: str) -> bool:
         cursor: sqlite3.Cursor = conn.cursor()
         query: str = f"""
             UPDATE offers 
-            SET status = "{new_status}"
+            SET 
+                status = "{new_status}", 
+                title = "{new_title}", 
+                dateAdded="{new_date}", 
+                company="{new_company}"
             WHERE url = "{url}";
         """
 
         cursor = cursor.execute(query)
         conn.commit()
         conn.close()
+
+        if not _update_statuses(url):
+            raise Exception
+
         return True
 
     except:
@@ -71,7 +81,7 @@ def update_status(url: str, new_status: str) -> bool:
         return False
 
 
-def _update_statuses() -> bool:
+def _update_statuses(url: str = "") -> bool:
     try:
         if not check_db_exists():
             return False
@@ -87,8 +97,17 @@ def _update_statuses() -> bool:
             WHERE 
                 ROUND(julianday("now") - julianday(dateAdded)) > 30 
                 AND
-                status = "Applied";
+                status = "Applied"
         """
+
+        if url != "":
+            query = f"""
+            {query} 
+            AND 
+            url = "{url}";
+            """
+        else:
+            query = f"{query};"
 
         cursor = cursor.execute(query)
         conn.commit()

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./NewOffer.css";
 
 type newOfferProps = {
 	setErrMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -9,12 +10,21 @@ const API_BASE: string = import.meta.env.VITE_API_URL;
 
 function NewOffer({ setErrMessage, setIsOfferAdded }: newOfferProps) {
 	const [companyName, setCompanyName] = useState<string>("");
+	const [companyNameErr, setCompanyNameErr] = useState<boolean>(true);
 	const [offerURL, setOfferURL] = useState<string>("");
+	const [offerURLErr, setOfferURLErr] = useState<boolean>(true);
 	const [positionName, setPositionName] = useState<string>("");
+	const [positionNameErr, setPositionNameErr] = useState<boolean>(true);
 
-	function getFormData(event: React.ChangeEvent<HTMLFormElement>) {
-		event.preventDefault();
+	function formErr() {
+		companyName === "" ? setCompanyNameErr(true) : setCompanyNameErr(false);
+		offerURL === "" ? setOfferURLErr(true) : setOfferURLErr(false);
+		positionName === ""
+			? setPositionNameErr(true)
+			: setPositionNameErr(false);
+	}
 
+	function postData() {
 		fetch(`${API_BASE}/add-offer`, {
 			method: "POST",
 			body: JSON.stringify({
@@ -37,26 +47,49 @@ function NewOffer({ setErrMessage, setIsOfferAdded }: newOfferProps) {
 				}
 			});
 	}
+
+	function getFormData(event: React.ChangeEvent<HTMLFormElement>) {
+		event.preventDefault();
+		formErr();
+
+		if (companyNameErr || offerURLErr || positionNameErr) {
+			return;
+		}
+
+		postData();
+	}
+
 	return (
-		<form className="form" onSubmit={getFormData}>
+		<form
+			className="form"
+			onSubmit={getFormData}
+			onChange={formErr}
+			onKeyUp={formErr}
+		>
 			<div>
 				<input
 					placeholder="Provide Company Name"
 					name="companyName"
-					className="input"
-					onChange={(e) => setCompanyName(e.target.value)}
+					className={companyNameErr ? "input err" : "input"}
+					onChange={(e) => {
+						setCompanyName(e.target.value);
+					}}
 				></input>
 				<input
 					placeholder="Provide Offer URL"
 					name="offerURL"
-					className="input"
-					onChange={(e) => setOfferURL(e.target.value)}
+					className={offerURLErr ? "input err" : "input"}
+					onChange={(e) => {
+						setOfferURL(e.target.value);
+					}}
 				></input>
 				<input
 					placeholder="Provide Position Name"
 					name="positionName"
-					className="input"
-					onChange={(e) => setPositionName(e.target.value)}
+					className={positionNameErr ? "input err" : "input"}
+					onChange={(e) => {
+						setPositionName(e.target.value);
+					}}
 				></input>
 			</div>
 			<button type="submit" className="button">

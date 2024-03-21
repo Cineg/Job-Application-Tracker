@@ -17,14 +17,6 @@
 	width: 80%;
 }
 
-.input {
-	padding: 0.5rem;
-	border-radius: 5px;
-	border: 1px solid transparent;
-	width: 30%;
-	min-width: 8rem;
-}
-
 .button {
 	width: 9rem;
 	margin-top: 1rem;
