@@ -25,4 +25,5 @@
 }
 .always-fit {
 	min-width: max-content;
+	margin-left: 10px;
 }
