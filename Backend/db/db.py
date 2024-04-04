@@ -3,14 +3,27 @@ import os
 from datetime import date
 
 DB_PATH: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), "database.db")
+TEST_DB_PATH: str = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), "test_database.db"
+)
 
 
 ##########
 # CREATE #
 ##########
-def create_offer_table() -> bool:
+def create_db(db_path: str = DB_PATH) -> bool:
+    if os.path.exists(db_path):
+        return True
+
+    create_offer_table(db_path)
+    create_refresh_table(db_path)
+
+    return os.path.exists(db_path)
+
+
+def create_offer_table(db_path: str = DB_PATH) -> bool:
     try:
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
 
         query: str = """
             CREATE TABLE offers (url TEXT PRIMARY KEY UNIQUE, company TEXT, title TEXT, status TEXT, dateAdded TEXT);
@@ -24,9 +37,9 @@ def create_offer_table() -> bool:
         return False
 
 
-def create_refresh_table() -> bool:
+def create_refresh_table(db_path: str = DB_PATH) -> bool:
     try:
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
 
         query: str = """
             CREATE TABLE refresh (refreshDate TEXT);
@@ -49,13 +62,18 @@ def create_refresh_table() -> bool:
 # UPDATE #
 ##########
 def update_status(
-    url: str, new_status: str, new_title: str, new_date: str, new_company: str
+    url: str,
+    new_status: str,
+    new_title: str,
+    new_date: str,
+    new_company: str,
+    db_path: str = DB_PATH,
 ) -> bool:
     try:
-        if not check_db_exists():
+        if not check_db_exists(db_path):
             return False
 
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = conn.cursor()
         query: str = f"""
             UPDATE offers 
@@ -81,15 +99,15 @@ def update_status(
         return False
 
 
-def _update_statuses(url: str = "") -> bool:
+def _update_statuses(url: str = "", db_path: str = DB_PATH) -> bool:
     try:
-        if not check_db_exists():
+        if not check_db_exists(db_path):
             return False
 
         if _get_timestamp() == date.today():
             return True
 
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = conn.cursor()
         query: str = f"""
             UPDATE offers 
@@ -123,12 +141,12 @@ def _update_statuses(url: str = "") -> bool:
         return False
 
 
-def _update_timestamp() -> bool:
+def _update_timestamp(db_path: str = DB_PATH) -> bool:
     try:
-        if not check_db_exists():
+        if not check_db_exists(db_path):
             return False
 
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = conn.cursor()
         query: str = f"""
             UPDATE refresh 
@@ -149,12 +167,12 @@ def _update_timestamp() -> bool:
 ##########
 # INSERT #
 ##########
-def add_one_offer(url: str, company: str, title: str) -> bool:
+def add_one_offer(url: str, company: str, title: str, db_path: str = DB_PATH) -> bool:
     try:
-        if not check_db_exists():
+        if not check_db_exists(db_path):
             return False
 
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = conn.cursor()
         query: str = f"""
             INSERT INTO offers (url, company, title, status, dateAdded)
@@ -170,9 +188,9 @@ def add_one_offer(url: str, company: str, title: str) -> bool:
         return False
 
 
-def _add_timestamp() -> bool:
+def _add_timestamp(db_path: str = DB_PATH) -> bool:
     try:
-        if not check_db_exists():
+        if not check_db_exists(db_path):
             return False
         conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
         cursor: sqlite3.Cursor = conn.cursor()
@@ -193,12 +211,12 @@ def _add_timestamp() -> bool:
 ##########
 # SELECT #
 ##########
-def select_all() -> list[list[str]] | None:
+def select_all(db_path: str = DB_PATH) -> list[list[str]] | None:
     try:
-        if not check_db_exists():
+        if not check_db_exists(db_path):
             return None
 
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
 
         query: str = """
@@ -223,10 +241,10 @@ def select_all() -> list[list[str]] | None:
         return None
 
 
-def _select_one() -> list[list[str]] | None:
+def _select_one(db_path: str = DB_PATH) -> list[list[str]] | None:
     # DEBUG FUNCTION
     try:
-        if not check_db_exists():
+        if not check_db_exists(db_path):
             return None
         conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
         cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
@@ -254,12 +272,12 @@ def _select_one() -> list[list[str]] | None:
         return None
 
 
-def _get_timestamp() -> str | None:
+def _get_timestamp(db_path: str = DB_PATH) -> str | None:
     try:
-        if not check_db_exists():
+        if not check_db_exists(db_path):
             return None
 
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
         query: str = """
             SELECT * from refresh;
@@ -277,12 +295,12 @@ def _get_timestamp() -> str | None:
 ##########
 # DELETE #
 ##########
-def delete_offer(url: str) -> bool:
+def delete_offer(url: str, db_path: str = DB_PATH) -> bool:
     try:
-        if not check_db_exists():
+        if not check_db_exists(db_path):
             return False
 
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
 
         query: str = f"""
@@ -300,18 +318,26 @@ def delete_offer(url: str) -> bool:
         return False
 
 
+def delete_local_db(db_path: str = DB_PATH) -> bool:
+    if not check_db_exists(db_path, False) or ".db" not in db_path:
+        return False
+
+    os.remove(db_path)
+    return not check_db_exists(db_path, False)
+
+
 ###########
 # HELPERS #
 ###########
-def check_db_exists() -> bool:
-    if os.path.exists(DB_PATH):
+def check_db_exists(db_path: str = DB_PATH, attempt_create_db: bool = True) -> bool:
+    if os.path.exists(db_path):
         return True
 
-    create_offer_table()
-    create_refresh_table()
+    if attempt_create_db:
+        create_db(db_path)
 
-    if os.path.exists(DB_PATH):
-        return True
+        if os.path.exists(db_path):
+            return True
 
     return False
 
