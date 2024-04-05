@@ -15,6 +15,9 @@ def create_db(db_path: str = DB_PATH) -> bool:
     if os.path.exists(db_path):
         return True
 
+    with open(db_path, "w"):
+        pass
+
     create_offer_table(db_path)
     create_refresh_table(db_path)
 
@@ -22,6 +25,9 @@ def create_db(db_path: str = DB_PATH) -> bool:
 
 
 def create_offer_table(db_path: str = DB_PATH) -> bool:
+    if not check_db_exists(db_path, False):
+        return False
+
     try:
         conn: sqlite3.Connection = sqlite3.connect(db_path)
 
@@ -38,6 +44,8 @@ def create_offer_table(db_path: str = DB_PATH) -> bool:
 
 
 def create_refresh_table(db_path: str = DB_PATH) -> bool:
+    if not check_db_exists(db_path, False):
+        return False
     try:
         conn: sqlite3.Connection = sqlite3.connect(db_path)
 
@@ -48,7 +56,7 @@ def create_refresh_table(db_path: str = DB_PATH) -> bool:
         conn.execute(query)
         conn.close()
 
-        if not _add_timestamp():
+        if not _add_timestamp(db_path):
             raise Exception
 
         return True
@@ -69,10 +77,10 @@ def update_status(
     new_company: str,
     db_path: str = DB_PATH,
 ) -> bool:
-    try:
-        if not check_db_exists(db_path):
-            return False
+    if not check_db_exists(db_path, False):
+        return False
 
+    try:
         conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = conn.cursor()
         query: str = f"""
@@ -100,11 +108,12 @@ def update_status(
 
 
 def _update_statuses(url: str = "", db_path: str = DB_PATH) -> bool:
-    try:
-        if not check_db_exists(db_path):
-            return False
+    if not check_db_exists(db_path, False):
+        return False
 
-        if _get_timestamp() == date.today():
+    try:
+        today: str = date.today().strftime("%Y-%m-%d")
+        if _get_timestamp() == today:
             return True
 
         conn: sqlite3.Connection = sqlite3.connect(db_path)
@@ -142,10 +151,9 @@ def _update_statuses(url: str = "", db_path: str = DB_PATH) -> bool:
 
 
 def _update_timestamp(db_path: str = DB_PATH) -> bool:
+    if not check_db_exists(db_path, False):
+        return False
     try:
-        if not check_db_exists(db_path):
-            return False
-
         conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = conn.cursor()
         query: str = f"""
@@ -189,10 +197,11 @@ def add_one_offer(url: str, company: str, title: str, db_path: str = DB_PATH) ->
 
 
 def _add_timestamp(db_path: str = DB_PATH) -> bool:
+    if not check_db_exists(db_path):
+        return False
+
     try:
-        if not check_db_exists(db_path):
-            return False
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = conn.cursor()
 
         query: str = """
@@ -273,10 +282,10 @@ def _select_one(db_path: str = DB_PATH) -> list[list[str]] | None:
 
 
 def _get_timestamp(db_path: str = DB_PATH) -> str | None:
-    try:
-        if not check_db_exists(db_path):
-            return None
+    if not check_db_exists(db_path, False):
+        return None
 
+    try:
         conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
         query: str = """
@@ -284,7 +293,7 @@ def _get_timestamp(db_path: str = DB_PATH) -> str | None:
         """
 
         cursor.execute(query)
-        result: str = cursor.fetchone()
+        result: str = cursor.fetchone()[0]
 
         conn.close()
         return result
