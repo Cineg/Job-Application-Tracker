@@ -83,6 +83,10 @@ def update_status(
     try:
         conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = conn.cursor()
+
+        if _select_one(url, db_path) is None:
+            return False
+
         query: str = f"""
             UPDATE offers 
             SET 
@@ -107,13 +111,15 @@ def update_status(
         return False
 
 
-def _update_statuses(url: str = "", db_path: str = DB_PATH) -> bool:
+def _update_statuses(
+    url: str = "", db_path: str = DB_PATH, check_timestamp: bool = True
+) -> bool:
     if not check_db_exists(db_path, False):
         return False
 
     try:
         today: str = date.today().strftime("%Y-%m-%d")
-        if _get_timestamp() == today:
+        if _get_timestamp(db_path) == today and check_timestamp:
             return True
 
         conn: sqlite3.Connection = sqlite3.connect(db_path)
@@ -128,6 +134,9 @@ def _update_statuses(url: str = "", db_path: str = DB_PATH) -> bool:
         """
 
         if url != "":
+            if _select_one(url, db_path) is None:
+                return False
+
             query = f"""
             {query} 
             AND 
@@ -140,7 +149,7 @@ def _update_statuses(url: str = "", db_path: str = DB_PATH) -> bool:
         conn.commit()
         conn.close()
 
-        if not _update_timestamp():
+        if not _update_timestamp(db_path):
             raise Exception
 
         return True
@@ -150,15 +159,17 @@ def _update_statuses(url: str = "", db_path: str = DB_PATH) -> bool:
         return False
 
 
-def _update_timestamp(db_path: str = DB_PATH) -> bool:
+def _update_timestamp(db_path: str = DB_PATH, date: date = date.today()) -> bool:
     if not check_db_exists(db_path, False):
         return False
     try:
+
+        format_date: str = date.strftime("%Y-%m-%d")
         conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = conn.cursor()
         query: str = f"""
             UPDATE refresh 
-            SET refreshDate = date("now")
+            SET refreshDate = "{format_date}"
             WHERE rowid = 1;
         """
 
@@ -250,28 +261,34 @@ def select_all(db_path: str = DB_PATH) -> list[list[str]] | None:
         return None
 
 
-def _select_one(db_path: str = DB_PATH) -> list[list[str]] | None:
+def _select_one(url: str, db_path: str = DB_PATH) -> list[list[str]] | None:
     # DEBUG FUNCTION
     try:
         if not check_db_exists(db_path):
             return None
-        conn: sqlite3.Connection = sqlite3.connect(DB_PATH)
+
+        conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
 
-        query: str = """
+        query: str = f"""
             SELECT 
                 rowid as id,
                 *
             FROM offers
             WHERE
-            url = "https://github.com/Cineg";
+            url = '{url}';
         """
 
         cursor.execute(query)
         result: list[list[str]] = []
         result.append(_get_headers(cursor))
 
-        query_result: list[str] = [cursor.fetchone()]
+        cursor_res = cursor.fetchone()
+
+        if cursor_res == None:
+            raise Exception
+
+        query_result: list[str] = [cursor_res]
         result.append(query_result)
 
         conn.close()
@@ -305,13 +322,15 @@ def _get_timestamp(db_path: str = DB_PATH) -> str | None:
 # DELETE #
 ##########
 def delete_offer(url: str, db_path: str = DB_PATH) -> bool:
+    if not check_db_exists(db_path, False):
+        return False
+    
+    if _select_one(url, db_path) is None:
+        return False
+    
     try:
-        if not check_db_exists(db_path):
-            return False
-
         conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
-
         query: str = f"""
             DELETE FROM offers    
             WHERE

@@ -40,8 +40,6 @@ def test__add_timestamp_db_not_exist(db_path: str) -> None:
 
 
 def test__add_timestamp_date(db_path: str) -> None:
-    if os.path.exists(db_path):
-        os.remove(db_path)
 
     res: bool = _add_timestamp(db_path)
     stamp: str | None = _get_timestamp(db_path)

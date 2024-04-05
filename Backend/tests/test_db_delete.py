@@ -1,7 +1,6 @@
-from ..db.db import delete_local_db, TEST_DB_PATH, check_db_exists, create_db
+from ..db.db import delete_local_db, TEST_DB_PATH, create_db
 import pytest
 import os
-from time import sleep
 
 
 @pytest.fixture
