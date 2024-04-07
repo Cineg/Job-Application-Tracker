@@ -324,10 +324,10 @@ def _get_timestamp(db_path: str = DB_PATH) -> str | None:
 def delete_offer(url: str, db_path: str = DB_PATH) -> bool:
     if not check_db_exists(db_path, False):
         return False
-    
+
     if _select_one(url, db_path) is None:
         return False
-    
+
     try:
         conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = sqlite3.Cursor(conn)

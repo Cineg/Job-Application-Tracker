@@ -34,38 +34,27 @@ def results() -> Response:
 
 
 @app.route("/api/v1/add-offer", methods=["POST"])
-def add_offer() -> Response:
+def add_offer(db_path: str = db.DB_PATH) -> Response:
     data: dict[str, str] = request.get_json()
 
     for key in ["url", "company", "title"]:
         if key not in data:
-            return jsonify(
-                message=f"{key.capitalize()} not provided", status=400, success=False
-            )
+            return Response(f"{key.capitalize()} not provided", status=400)
         elif type(data[key]) != str:
-            return jsonify(
-                message=f"{key.capitalize()} is not acceptable datatype",
-                status=400,
+            return Response(
+                f"{key.capitalize()} is not acceptable datatype", status=400
             )
         elif data[key] == "":
-            return jsonify(
-                message=f"{key.capitalize()} value not provided",
-                status=400,
-                success=False,
-            )
+            return Response(f"{key.capitalize()} value not provided", status=400)
 
-    if not db.add_one_offer(data["url"], data["company"], data["title"]):
-        return jsonify(
-            message=f"Can't add data to database. Please try again.",
-            status=400,
-            success=False,
-        )
+    if not db.add_one_offer(data["url"], data["company"], data["title"], db_path):
+        return Response(f"Can't add data to database. Please try again.", status=400)
 
     return jsonify(success=True)
 
 
 @app.route("/api/v1/update-offer", methods=["PUT"])
-def update_offer() -> Response:
+def update_offer(db_path: str = db.DB_PATH) -> Response:
     data: dict[str, str] = request.get_json()
     for key in ["url", "status", "company", "dateAdded", "title"]:
         if key not in data:
@@ -81,6 +70,7 @@ def update_offer() -> Response:
         new_company=data["company"],
         new_date=data["dateAdded"],
         new_title=data["title"],
+        db_path=db_path,
     ):
         return Response("Can't update database. Please try again.", 400)
 
@@ -88,7 +78,7 @@ def update_offer() -> Response:
 
 
 @app.route("/api/v1/delete-offer", methods=["DELETE"])
-def delete_offer() -> Response:
+def delete_offer(db_path: str = db.DB_PATH) -> Response:
     data: dict[str, str] = request.get_json()
     for key in ["url"]:
         if key not in data:
@@ -98,7 +88,7 @@ def delete_offer() -> Response:
         elif data[key] == "":
             return Response(f"{key.capitalize()} value not provided", 400)
 
-    if not db.delete_offer(data["url"]):
+    if not db.delete_offer(data["url"], db_path):
         return Response("Can't delete item from database. Please try again.", 400)
 
     return jsonify(success=True)
