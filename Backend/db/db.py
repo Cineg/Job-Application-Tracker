@@ -101,7 +101,7 @@ def update_status(
         conn.commit()
         conn.close()
 
-        if not _update_statuses(url):
+        if not _update_statuses(url, db_path):
             raise Exception
 
         return True
