@@ -231,10 +231,13 @@ def _add_timestamp(db_path: str = DB_PATH) -> bool:
 ##########
 # SELECT #
 ##########
-def select_all(db_path: str = DB_PATH) -> list[list[str]] | None:
+def select_all(db_path: str = DB_PATH, refresh: bool = True) -> list[list[str]] | None:
     try:
         if not check_db_exists(db_path):
             return None
+        
+        if refresh:
+            _update_statuses(db_path=DB_PATH)
 
         conn: sqlite3.Connection = sqlite3.connect(db_path)
         cursor: sqlite3.Cursor = sqlite3.Cursor(conn)
